@@ -1,0 +1,69 @@
+# CCED Study
+
+# --------------------------------------
+# EXPERIMENTAL PART
+# --------------------------------------
+
+l: randomize
+t: set
+- random 1 2
+
+l: jumpone
+t: jump
+- if $randomize == 1 then goto expA
+- if $randomize == 2 then goto expB
+
+l: expA
+t: experiment
+q: Experimental part:
+- {fullscreen} PDP_EXP_A
+
+l: jumptwo
+t: jump
+- goto gender
+
+l: expB
+t: experiment
+q: Experimental part:
+- {fullscreen} PDP_EXP_B
+
+# --------------------------------------
+# DEMOGRAPHICS
+# --------------------------------------
+
+l: gender
+t: radio
+q: What is your gender?
+- Male
+- Female
+- Other
+
+l: age
+t: textline
+q: How old are you?
+- 
+
+l: nationality
+t: textline
+q: What is your nationality?
+- 
+
+l: education
+t: radio
+q: What is the highest level of education you've completed?
+- Elementary school
+- High school
+- Some college (did not graduate)
+- Undergraduate degree
+- Graduate degree
+- Other
+
+l: prize
+t: textline
+q: (Optional) If you wish to be included in the prize draw please add your e-mail address in the box below. 
+- 
+
+l: debriefing
+t: textline
+q: (Optional) If you wish to receive a summary of this study once it has been concluded please add your e-mail address in the box below. 
+- 
