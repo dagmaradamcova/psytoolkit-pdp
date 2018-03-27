@@ -1,0 +1,360 @@
+# PERIPHERAL DISTRACTOR PARADIGM (adapted from Forster and Lavie, 2008)
+# PsyToolkit version 2.4.1
+
+options
+  fullscreen
+  resolution 900 600
+  set &fixationtime 500
+  set &displaytime 100
+  set &responsetime 1800
+  set &feedbacktime 150
+  set &ITI 500
+
+bitmaps
+  instructions1
+  instructions2
+  endmessage
+  correct
+  incorrect
+  fixation
+  targetX
+  targetN
+  oos
+  placeholder
+  F01NE  F01NE.jpg # neutral
+  F05NE  F05NE.jpg
+  F18NE  F18NE.jpg
+  F19NE  F19NE.jpg
+  F26NE  F26NE.jpg
+  F34NE  F34NE.jpg
+  M07NE  M07NE.jpg
+  M08NE  M08NE.jpg
+  M09NE  M09NE.jpg
+  M13NE  M13NE.jpg
+  M25NE  M25NE.jpg
+  M31NE  M31NE.jpg
+  F06HA  F06HA.jpg # happy
+  F11HA  F11HA.jpg
+  F20HA  F20HA.jpg
+  F21HA  F21HA.jpg
+  F33HA  F33HA.jpg
+  F34HA  F34HA.jpg
+  M07HA  M07HA.jpg
+  M12HA  M12HA.jpg
+  M22HA  M22HA.jpg
+  M23HA  M23HA.jpg
+  M26HA  M26HA.jpg
+  M32HA  M32HA.jpg
+  F14AN  F14AN.jpg # angry
+  F21AN  F21AN.jpg
+  F23AN  F23AN.jpg
+  F25AN  F25AN.jpg
+  F29AN  F29AN.jpg
+  F31AN  F31AN.jpg
+  M05AN  M05AN.jpg
+  M09AN  M09AN.jpg
+  M10AN  M10AN.jpg
+  M17AN  M17AN.jpg
+  M29AN  M29AN.jpg
+  M32AN  M32AN.jpg
+
+# ----------------------------------------------------------
+# COMMON TRIAL SEQUENCE
+# ----------------------------------------------------------
+
+part trialsequence
+  keys x n
+  set $x random from -300 300
+  set $y 0
+  show bitmap fixation      #[1]
+  delay &fixationtime
+  clear 1
+  draw off
+    show bitmap @4 @5 @6    #[2]
+    show bitmap @7 @8 @9    #[3]
+    show bitmap @10 @11 @12 #[4]
+    show bitmap @13 @14 @15 #[5]
+    show bitmap @16 @17 @18 #[6]
+    show bitmap @19 @20 @21 #[7]
+    show bitmap @22 $x $y   #[8]
+  draw on
+  delay &displaytime
+  clear range 2 8
+  readkey @3 &responsetime
+  if STATUS = CORRECT
+    show bitmap correct
+    delay &feedbacktime
+    clear -1
+  fi
+  if STATUS != CORRECT
+    show bitmap incorrect
+    delay &feedbacktime
+    clear -1
+  fi
+  delay &ITI
+  save @1 @2 @3 @22 STATUS RT BLOCKNAME BLOCKORDER # save trial data
+
+# ----------------------------------------------------------
+# TASKS
+# ----------------------------------------------------------
+
+task t_practice
+  table practice
+  part trialsequence
+
+task tB_neutral
+  table B_neutral
+  part trialsequence
+
+task tB_happy
+  table B_happy
+  part trialsequence
+
+task tB_angry
+  table B_angry
+  part trialsequence
+
+# ----------------------------------------------------------
+# BLOCKS
+# ----------------------------------------------------------
+
+block b_practice
+  message instructions1
+  tasklist
+    t_practice 12 all_before_repeat
+  end
+  message instructions2
+
+block bB_neutral
+  tasklist
+    tB_neutral 48 all_before_repeat
+  end
+  
+block bB_happy
+  tasklist
+    tB_happy 48 all_before_repeat
+  end
+
+block bB_angry
+  tasklist
+    tB_angry 48 all_before_repeat
+  end
+  
+block b_end  
+  message endmessage
+
+# ----------------------------------------------------------
+# BLOCKORDERS # NHA NAH HNA HAN ANH AHN
+# ----------------------------------------------------------
+
+blockorder # NHA (1)
+  b_practice
+  bB_neutral
+  bB_happy
+  bB_angry
+  b_end
+
+blockorder # NAH (2)
+  b_practice
+  bB_neutral
+  bB_angry
+  bB_happy
+  b_end
+
+blockorder # HNA (3)
+  b_practice
+  bB_happy
+  bB_neutral
+  bB_angry
+  b_end
+
+blockorder # HAN (4)
+  b_practice
+  bB_happy
+  bB_angry
+  bB_neutral
+  b_end
+
+blockorder # ANH (5)
+  b_practice
+  bB_angry
+  bB_neutral
+  bB_happy
+  b_end
+
+blockorder # AHN (6)
+  b_practice
+  bB_angry
+  bB_happy
+  bB_neutral
+  b_end
+
+
+
+# ----------------------------------------------------------
+# TABLES
+# ----------------------------------------------------------
+
+table practice
+  "P" 0 1 targetX  87 -50 oos 0 -100 oos -87 -50 oos -87 50 oos 0 100 oos 87 50 placeholder
+  "P" 0 1 oos  87 -50 targetX 0 -100 oos -87 -50 oos -87 50 oos 0 100 oos 87 50 placeholder
+  "P" 0 1 oos  87 -50 oos 0 -100 targetX -87 -50 oos -87 50 oos 0 100 oos 87 50 placeholder
+  "P" 0 1 oos  87 -50 oos 0 -100 oos -87 -50 targetX -87 50 oos 0 100 oos 87 50 placeholder
+  "P" 0 1 oos  87 -50 oos 0 -100 oos -87 -50 oos -87 50 targetX 0 100 oos 87 50 placeholder
+  "P" 0 1 oos  87 -50 oos 0 -100 oos -87 -50 oos -87 50 oos 0 100 targetX 87 50 placeholder
+  "P" 0 2 targetN  87 -50 oos 0 -100 oos -87 -50 oos -87 50 oos 0 100 oos 87 50 placeholder
+  "P" 0 2 oos  87 -50 targetN 0 -100 oos -87 -50 oos -87 50 oos 0 100 oos 87 50 placeholder
+  "P" 0 2 oos  87 -50 oos 0 -100 targetN -87 -50 oos -87 50 oos 0 100 oos 87 50 placeholder
+  "P" 0 2 oos  87 -50 oos 0 -100 oos -87 -50 targetN -87 50 oos 0 100 oos 87 50 placeholder
+  "P" 0 2 oos  87 -50 oos 0 -100 oos -87 -50 oos -87 50 targetN 0 100 oos 87 50 placeholder
+  "P" 0 2 oos  87 -50 oos 0 -100 oos -87 -50 oos -87 50 oos 0 100 targetN 87 50 placeholder
+
+table B_neutral ### NEUTRAL B
+  "B" 1 1 targetX 87 -50 oos 87 50 oos 0 100 oos -87 50 oos -87 -50 oos 0 -100 F34NE
+  "B" 1 1 targetX 0 -100 oos 87 -50 oos 87 50 oos 0 100 oos -87 50 oos -87 -50 M25NE
+  "B" 0 1 targetX -87 -50 oos 0 -100 oos 87 -50 oos 87 50 oos 0 100 oos -87 50 placeholder
+  "B" 1 1 targetX -87 50 oos -87 -50 oos 0 -100 oos 87 -50 oos 87 50 oos 0 100 F01NE
+  "B" 1 1 targetX 0 100 oos -87 50 oos -87 -50 oos 0 -100 oos 87 -50 oos 87 50 M07NE
+  "B" 1 1 targetX 87 50 oos 0 100 oos -87 50 oos -87 -50 oos 0 -100 oos 87 -50 M13NE
+  "B" 1 2 targetN 87 -50 oos 87 50 oos 0 100 oos -87 50 oos -87 -50 oos 0 -100 M31NE
+  "B" 1 2 targetN 0 -100 oos 87 -50 oos 87 50 oos 0 100 oos -87 50 oos -87 -50 M13NE
+  "B" 1 2 targetN -87 -50 oos 0 -100 oos 87 -50 oos 87 50 oos 0 100 oos -87 50 M08NE
+  "B" 0 2 targetN -87 50 oos -87 -50 oos 0 -100 oos 87 -50 oos 87 50 oos 0 100 placeholder
+  "B" 1 2 targetN 0 100 oos -87 50 oos -87 -50 oos 0 -100 oos 87 -50 oos 87 50 F26NE
+  "B" 1 2 targetN 87 50 oos 0 100 oos -87 50 oos -87 -50 oos 0 -100 oos 87 -50 M09NE
+  "B" 1 1 targetX 87 -50 oos 87 50 oos 0 100 oos -87 50 oos -87 -50 oos 0 -100 F18NE
+  "B" 1 1 targetX 0 -100 oos 87 -50 oos 87 50 oos 0 100 oos -87 50 oos -87 -50 F05NE
+  "B" 1 1 targetX -87 -50 oos 0 -100 oos 87 -50 oos 87 50 oos 0 100 oos -87 50 M09NE
+  "B" 1 1 targetX -87 50 oos -87 -50 oos 0 -100 oos 87 -50 oos 87 50 oos 0 100 M08NE
+  "B" 1 1 targetX 0 100 oos -87 50 oos -87 -50 oos 0 -100 oos 87 -50 oos 87 50 F26NE
+  "B" 0 1 targetX 87 50 oos 0 100 oos -87 50 oos -87 -50 oos 0 -100 oos 87 -50 placeholder
+  "B" 1 2 targetN 87 -50 oos 87 50 oos 0 100 oos -87 50 oos -87 -50 oos 0 -100 F01NE
+  "B" 0 2 targetN 0 -100 oos 87 -50 oos 87 50 oos 0 100 oos -87 50 oos -87 -50 placeholder
+  "B" 1 2 targetN -87 -50 oos 0 -100 oos 87 -50 oos 87 50 oos 0 100 oos -87 50 M25NE
+  "B" 1 2 targetN -87 50 oos -87 -50 oos 0 -100 oos 87 -50 oos 87 50 oos 0 100 F34NE
+  "B" 0 2 targetN 0 100 oos -87 50 oos -87 -50 oos 0 -100 oos 87 -50 oos 87 50 placeholder
+  "B" 1 2 targetN 87 50 oos 0 100 oos -87 50 oos -87 -50 oos 0 -100 oos 87 -50 F05NE
+  "B" 1 1 targetX 87 -50 oos 87 50 oos 0 100 oos -87 50 oos -87 -50 oos 0 -100 F19NE
+  "B" 1 1 targetX 0 -100 oos 87 -50 oos 87 50 oos 0 100 oos -87 50 oos -87 -50 M25NE
+  "B" 1 1 targetX -87 -50 oos 0 -100 oos 87 -50 oos 87 50 oos 0 100 oos -87 50 F18NE
+  "B" 1 1 targetX -87 50 oos -87 -50 oos 0 -100 oos 87 -50 oos 87 50 oos 0 100 F01NE
+  "B" 0 1 targetX 0 100 oos -87 50 oos -87 -50 oos 0 -100 oos 87 -50 oos 87 50 placeholder
+  "B" 1 1 targetX 87 50 oos 0 100 oos -87 50 oos -87 -50 oos 0 -100 oos 87 -50 M08NE
+  "B" 1 2 targetN 87 -50 oos 87 50 oos 0 100 oos -87 50 oos -87 -50 oos 0 -100 F19NE
+  "B" 1 2 targetN 0 -100 oos 87 -50 oos 87 50 oos 0 100 oos -87 50 oos -87 -50 F19NE
+  "B" 0 2 targetN -87 -50 oos 0 -100 oos 87 -50 oos 87 50 oos 0 100 oos -87 50 placeholder
+  "B" 0 2 targetN -87 50 oos -87 -50 oos 0 -100 oos 87 -50 oos 87 50 oos 0 100 placeholder
+  "B" 0 2 targetN 0 100 oos -87 50 oos -87 -50 oos 0 -100 oos 87 -50 oos 87 50 placeholder
+  "B" 1 2 targetN 87 50 oos 0 100 oos -87 50 oos -87 -50 oos 0 -100 oos 87 -50 F05NE
+  "B" 1 1 targetX 87 -50 oos 87 50 oos 0 100 oos -87 50 oos -87 -50 oos 0 -100 M31NE
+  "B" 1 1 targetX 0 -100 oos 87 -50 oos 87 50 oos 0 100 oos -87 50 oos -87 -50 F26NE
+  "B" 0 1 targetX -87 -50 oos 0 -100 oos 87 -50 oos 87 50 oos 0 100 oos -87 50 placeholder
+  "B" 1 1 targetX -87 50 oos -87 -50 oos 0 -100 oos 87 -50 oos 87 50 oos 0 100 M07NE
+  "B" 1 1 targetX 0 100 oos -87 50 oos -87 -50 oos 0 -100 oos 87 -50 oos 87 50 F34NE
+  "B" 1 1 targetX 87 50 oos 0 100 oos -87 50 oos -87 -50 oos 0 -100 oos 87 -50 M13NE
+  "B" 1 2 targetN 87 -50 oos 87 50 oos 0 100 oos -87 50 oos -87 -50 oos 0 -100 F18NE
+  "B" 0 2 targetN 0 -100 oos 87 -50 oos 87 50 oos 0 100 oos -87 50 oos -87 -50 placeholder
+  "B" 1 2 targetN -87 -50 oos 0 -100 oos 87 -50 oos 87 50 oos 0 100 oos -87 50 M09NE
+  "B" 0 2 targetN -87 50 oos -87 -50 oos 0 -100 oos 87 -50 oos 87 50 oos 0 100 placeholder
+  "B" 1 2 targetN 0 100 oos -87 50 oos -87 -50 oos 0 -100 oos 87 -50 oos 87 50 M31NE
+  "B" 1 2 targetN 87 50 oos 0 100 oos -87 50 oos -87 -50 oos 0 -100 oos 87 -50 M07NE
+
+table B_happy ### HAPPY B
+  "B" 2 1 targetX 87 -50 oos 87 50 oos 0 100 oos -87 50 oos -87 -50 oos 0 -100 F34HA
+  "B" 2 1 targetX 0 -100 oos 87 -50 oos 87 50 oos 0 100 oos -87 50 oos -87 -50 M26HA
+  "B" 0 1 targetX -87 -50 oos 0 -100 oos 87 -50 oos 87 50 oos 0 100 oos -87 50 placeholder
+  "B" 2 1 targetX -87 50 oos -87 -50 oos 0 -100 oos 87 -50 oos 87 50 oos 0 100 F06HA
+  "B" 2 1 targetX 0 100 oos -87 50 oos -87 -50 oos 0 -100 oos 87 -50 oos 87 50 M07HA
+  "B" 2 1 targetX 87 50 oos 0 100 oos -87 50 oos -87 -50 oos 0 -100 oos 87 -50 M23HA
+  "B" 2 2 targetN 87 -50 oos 87 50 oos 0 100 oos -87 50 oos -87 -50 oos 0 -100 M32HA
+  "B" 2 2 targetN 0 -100 oos 87 -50 oos 87 50 oos 0 100 oos -87 50 oos -87 -50 M23HA
+  "B" 2 2 targetN -87 -50 oos 0 -100 oos 87 -50 oos 87 50 oos 0 100 oos -87 50 M12HA
+  "B" 0 2 targetN -87 50 oos -87 -50 oos 0 -100 oos 87 -50 oos 87 50 oos 0 100 placeholder
+  "B" 2 2 targetN 0 100 oos -87 50 oos -87 -50 oos 0 -100 oos 87 -50 oos 87 50 F33HA
+  "B" 2 2 targetN 87 50 oos 0 100 oos -87 50 oos -87 -50 oos 0 -100 oos 87 -50 M22HA
+  "B" 2 1 targetX 87 -50 oos 87 50 oos 0 100 oos -87 50 oos -87 -50 oos 0 -100 F20HA
+  "B" 2 1 targetX 0 -100 oos 87 -50 oos 87 50 oos 0 100 oos -87 50 oos -87 -50 F11HA
+  "B" 2 1 targetX -87 -50 oos 0 -100 oos 87 -50 oos 87 50 oos 0 100 oos -87 50 M22HA
+  "B" 2 1 targetX -87 50 oos -87 -50 oos 0 -100 oos 87 -50 oos 87 50 oos 0 100 M12HA
+  "B" 2 1 targetX 0 100 oos -87 50 oos -87 -50 oos 0 -100 oos 87 -50 oos 87 50 F33HA
+  "B" 0 1 targetX 87 50 oos 0 100 oos -87 50 oos -87 -50 oos 0 -100 oos 87 -50 placeholder
+  "B" 2 2 targetN 87 -50 oos 87 50 oos 0 100 oos -87 50 oos -87 -50 oos 0 -100 F06HA
+  "B" 0 2 targetN 0 -100 oos 87 -50 oos 87 50 oos 0 100 oos -87 50 oos -87 -50 placeholder
+  "B" 2 2 targetN -87 -50 oos 0 -100 oos 87 -50 oos 87 50 oos 0 100 oos -87 50 M26HA
+  "B" 2 2 targetN -87 50 oos -87 -50 oos 0 -100 oos 87 -50 oos 87 50 oos 0 100 F34HA
+  "B" 0 2 targetN 0 100 oos -87 50 oos -87 -50 oos 0 -100 oos 87 -50 oos 87 50 placeholder
+  "B" 2 2 targetN 87 50 oos 0 100 oos -87 50 oos -87 -50 oos 0 -100 oos 87 -50 F11HA
+  "B" 2 1 targetX 87 -50 oos 87 50 oos 0 100 oos -87 50 oos -87 -50 oos 0 -100 F21HA
+  "B" 2 1 targetX 0 -100 oos 87 -50 oos 87 50 oos 0 100 oos -87 50 oos -87 -50 M26HA
+  "B" 2 1 targetX -87 -50 oos 0 -100 oos 87 -50 oos 87 50 oos 0 100 oos -87 50 F20HA
+  "B" 2 1 targetX -87 50 oos -87 -50 oos 0 -100 oos 87 -50 oos 87 50 oos 0 100 F06HA
+  "B" 0 1 targetX 0 100 oos -87 50 oos -87 -50 oos 0 -100 oos 87 -50 oos 87 50 placeholder
+  "B" 2 1 targetX 87 50 oos 0 100 oos -87 50 oos -87 -50 oos 0 -100 oos 87 -50 M12HA
+  "B" 2 2 targetN 87 -50 oos 87 50 oos 0 100 oos -87 50 oos -87 -50 oos 0 -100 F21HA
+  "B" 2 2 targetN 0 -100 oos 87 -50 oos 87 50 oos 0 100 oos -87 50 oos -87 -50 F21HA
+  "B" 0 2 targetN -87 -50 oos 0 -100 oos 87 -50 oos 87 50 oos 0 100 oos -87 50 placeholder
+  "B" 0 2 targetN -87 50 oos -87 -50 oos 0 -100 oos 87 -50 oos 87 50 oos 0 100 placeholder
+  "B" 0 2 targetN 0 100 oos -87 50 oos -87 -50 oos 0 -100 oos 87 -50 oos 87 50 placeholder
+  "B" 2 2 targetN 87 50 oos 0 100 oos -87 50 oos -87 -50 oos 0 -100 oos 87 -50 F11HA
+  "B" 2 1 targetX 87 -50 oos 87 50 oos 0 100 oos -87 50 oos -87 -50 oos 0 -100 M32HA
+  "B" 2 1 targetX 0 -100 oos 87 -50 oos 87 50 oos 0 100 oos -87 50 oos -87 -50 F33HA
+  "B" 0 1 targetX -87 -50 oos 0 -100 oos 87 -50 oos 87 50 oos 0 100 oos -87 50 placeholder
+  "B" 2 1 targetX -87 50 oos -87 -50 oos 0 -100 oos 87 -50 oos 87 50 oos 0 100 M07HA
+  "B" 2 1 targetX 0 100 oos -87 50 oos -87 -50 oos 0 -100 oos 87 -50 oos 87 50 F34HA
+  "B" 2 1 targetX 87 50 oos 0 100 oos -87 50 oos -87 -50 oos 0 -100 oos 87 -50 M23HA
+  "B" 2 2 targetN 87 -50 oos 87 50 oos 0 100 oos -87 50 oos -87 -50 oos 0 -100 F20HA
+  "B" 0 2 targetN 0 -100 oos 87 -50 oos 87 50 oos 0 100 oos -87 50 oos -87 -50 placeholder
+  "B" 2 2 targetN -87 -50 oos 0 -100 oos 87 -50 oos 87 50 oos 0 100 oos -87 50 M22HA
+  "B" 0 2 targetN -87 50 oos -87 -50 oos 0 -100 oos 87 -50 oos 87 50 oos 0 100 placeholder
+  "B" 2 2 targetN 0 100 oos -87 50 oos -87 -50 oos 0 -100 oos 87 -50 oos 87 50 M32HA
+  "B" 2 2 targetN 87 50 oos 0 100 oos -87 50 oos -87 -50 oos 0 -100 oos 87 -50 M07HA
+
+table B_angry ### ANGRY B
+  "B" 3 1 targetX 87 -50 oos 87 50 oos 0 100 oos -87 50 oos -87 -50 oos 0 -100 F31AN
+  "B" 3 1 targetX 0 -100 oos 87 -50 oos 87 50 oos 0 100 oos -87 50 oos -87 -50 M29AN
+  "B" 0 1 targetX -87 -50 oos 0 -100 oos 87 -50 oos 87 50 oos 0 100 oos -87 50 placeholder
+  "B" 3 1 targetX -87 50 oos -87 -50 oos 0 -100 oos 87 -50 oos 87 50 oos 0 100 F14AN
+  "B" 3 1 targetX 0 100 oos -87 50 oos -87 -50 oos 0 -100 oos 87 -50 oos 87 50 M05AN
+  "B" 3 1 targetX 87 50 oos 0 100 oos -87 50 oos -87 -50 oos 0 -100 oos 87 -50 M17AN
+  "B" 3 2 targetN 87 -50 oos 87 50 oos 0 100 oos -87 50 oos -87 -50 oos 0 -100 M32AN
+  "B" 3 2 targetN 0 -100 oos 87 -50 oos 87 50 oos 0 100 oos -87 50 oos -87 -50 M17AN
+  "B" 3 2 targetN -87 -50 oos 0 -100 oos 87 -50 oos 87 50 oos 0 100 oos -87 50 M09AN
+  "B" 0 2 targetN -87 50 oos -87 -50 oos 0 -100 oos 87 -50 oos 87 50 oos 0 100 placeholder
+  "B" 3 2 targetN 0 100 oos -87 50 oos -87 -50 oos 0 -100 oos 87 -50 oos 87 50 F29AN
+  "B" 3 2 targetN 87 50 oos 0 100 oos -87 50 oos -87 -50 oos 0 -100 oos 87 -50 M10AN
+  "B" 3 1 targetX 87 -50 oos 87 50 oos 0 100 oos -87 50 oos -87 -50 oos 0 -100 F23AN
+  "B" 3 1 targetX 0 -100 oos 87 -50 oos 87 50 oos 0 100 oos -87 50 oos -87 -50 F21AN
+  "B" 3 1 targetX -87 -50 oos 0 -100 oos 87 -50 oos 87 50 oos 0 100 oos -87 50 M10AN
+  "B" 3 1 targetX -87 50 oos -87 -50 oos 0 -100 oos 87 -50 oos 87 50 oos 0 100 M09AN
+  "B" 3 1 targetX 0 100 oos -87 50 oos -87 -50 oos 0 -100 oos 87 -50 oos 87 50 F29AN
+  "B" 0 1 targetX 87 50 oos 0 100 oos -87 50 oos -87 -50 oos 0 -100 oos 87 -50 placeholder
+  "B" 3 2 targetN 87 -50 oos 87 50 oos 0 100 oos -87 50 oos -87 -50 oos 0 -100 F14AN
+  "B" 0 2 targetN 0 -100 oos 87 -50 oos 87 50 oos 0 100 oos -87 50 oos -87 -50 placeholder
+  "B" 3 2 targetN -87 -50 oos 0 -100 oos 87 -50 oos 87 50 oos 0 100 oos -87 50 M29AN
+  "B" 3 2 targetN -87 50 oos -87 -50 oos 0 -100 oos 87 -50 oos 87 50 oos 0 100 F31AN
+  "B" 0 2 targetN 0 100 oos -87 50 oos -87 -50 oos 0 -100 oos 87 -50 oos 87 50 placeholder
+  "B" 3 2 targetN 87 50 oos 0 100 oos -87 50 oos -87 -50 oos 0 -100 oos 87 -50 F21AN
+  "B" 3 1 targetX 87 -50 oos 87 50 oos 0 100 oos -87 50 oos -87 -50 oos 0 -100 F25AN
+  "B" 3 1 targetX 0 -100 oos 87 -50 oos 87 50 oos 0 100 oos -87 50 oos -87 -50 M29AN
+  "B" 3 1 targetX -87 -50 oos 0 -100 oos 87 -50 oos 87 50 oos 0 100 oos -87 50 F23AN
+  "B" 3 1 targetX -87 50 oos -87 -50 oos 0 -100 oos 87 -50 oos 87 50 oos 0 100 F14AN
+  "B" 0 1 targetX 0 100 oos -87 50 oos -87 -50 oos 0 -100 oos 87 -50 oos 87 50 placeholder
+  "B" 3 1 targetX 87 50 oos 0 100 oos -87 50 oos -87 -50 oos 0 -100 oos 87 -50 M09AN
+  "B" 3 2 targetN 87 -50 oos 87 50 oos 0 100 oos -87 50 oos -87 -50 oos 0 -100 F25AN
+  "B" 3 2 targetN 0 -100 oos 87 -50 oos 87 50 oos 0 100 oos -87 50 oos -87 -50 F25AN
+  "B" 0 2 targetN -87 -50 oos 0 -100 oos 87 -50 oos 87 50 oos 0 100 oos -87 50 placeholder
+  "B" 0 2 targetN -87 50 oos -87 -50 oos 0 -100 oos 87 -50 oos 87 50 oos 0 100 placeholder
+  "B" 0 2 targetN 0 100 oos -87 50 oos -87 -50 oos 0 -100 oos 87 -50 oos 87 50 placeholder
+  "B" 3 2 targetN 87 50 oos 0 100 oos -87 50 oos -87 -50 oos 0 -100 oos 87 -50 F21AN
+  "B" 3 1 targetX 87 -50 oos 87 50 oos 0 100 oos -87 50 oos -87 -50 oos 0 -100 M32AN
+  "B" 3 1 targetX 0 -100 oos 87 -50 oos 87 50 oos 0 100 oos -87 50 oos -87 -50 F29AN
+  "B" 0 1 targetX -87 -50 oos 0 -100 oos 87 -50 oos 87 50 oos 0 100 oos -87 50 placeholder
+  "B" 3 1 targetX -87 50 oos -87 -50 oos 0 -100 oos 87 -50 oos 87 50 oos 0 100 M05AN
+  "B" 3 1 targetX 0 100 oos -87 50 oos -87 -50 oos 0 -100 oos 87 -50 oos 87 50 F31AN
+  "B" 3 1 targetX 87 50 oos 0 100 oos -87 50 oos -87 -50 oos 0 -100 oos 87 -50 M17AN
+  "B" 3 2 targetN 87 -50 oos 87 50 oos 0 100 oos -87 50 oos -87 -50 oos 0 -100 F23AN
+  "B" 0 2 targetN 0 -100 oos 87 -50 oos 87 50 oos 0 100 oos -87 50 oos -87 -50 placeholder
+  "B" 3 2 targetN -87 -50 oos 0 -100 oos 87 -50 oos 87 50 oos 0 100 oos -87 50 M10AN
+  "B" 0 2 targetN -87 50 oos -87 -50 oos 0 -100 oos 87 -50 oos 87 50 oos 0 100 placeholder
+  "B" 3 2 targetN 0 100 oos -87 50 oos -87 -50 oos 0 -100 oos 87 -50 oos 87 50 M32AN
+  "B" 3 2 targetN 87 50 oos 0 100 oos -87 50 oos -87 -50 oos 0 -100 oos 87 -50 M05AN
